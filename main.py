@@ -1,8 +1,11 @@
+import os
 import sys
 import subprocess
 import json
 import logging
 import requests
+import indicoio
+from clarifai.client import ClarifaiApi
 from binascii import a2b_base64
 from uuid import uuid4
 from flask import Flask, render_template, request, redirect, session, Response, url_for
@@ -19,6 +22,18 @@ SECRET_KEY = config['APP_SECRET_KEY']
 app.logger.addHandler(logging.StreamHandler(sys.stdout))
 app.logger.setLevel(logging.ERROR)
 
+# Indico set-up
+indicoio.config.api_key = config['INDICO_KEY']
+
+# Clarifai set-up
+os.environ['CLARIFAI_APP_ID'] = config['CLARIFAI_ID']
+os.environ['CLARIFAI_APP_SECRET'] = config['CLARIFAI_SECRET']
+
+@app.before_first_request
+def setup_session_dicts():
+    session['msft'] = {}
+    session['indico'] = {}
+    session['clarifai'] = {}
 
 @app.route('/')
 def index():
@@ -49,25 +64,66 @@ def img_handler():
     subprocess.call("chmod 755 ./models/mount/{}".format(fn),
                     shell=True)
     resource = "http://cs.utexas.edu/~rainier/{}".format(fn)
-    url = "https://api.projectoxford.ai/emotion/v1.0/recognize"
+    print json.dumps({'url': resource})
+
+    # msft request
+    msft_url = "https://api.projectoxford.ai/emotion/v1.0/recognize"
     headers = {'Ocp-Apim-Subscription-Key': config['MSFT_EMOTION_KEY'],
                'Content-Type': 'application/json'}
-    print json.dumps({'url': resource})
-    req = requests.post(url=url, data=json.dumps({'url': resource}), headers=headers)
-    return str(req.json())
+    msft_req = requests.post(url=msft_url, data=json.dumps({'url': resource}), headers=headers)
+    session['msft'] = msft_parse(msft_req.json())
+
+    # indicoio request
+    session['indico'] = indicoio.fer(resource)
+
+    # clarifai request
+    clarifai_api = ClarifaiApi()
+    clarifai_req = clarifai_api.tag_image_urls(resource)
+    session['clarifai'] = clarifai_parse(clarifai_req)
+
+    return str(session['msft']) + '\n\n' + str(session['indico']) + '\n\n' + str(session['clarifai'])
+
+def msft_parse(json_obj):
+    """Parses the Microsoft Emotions API data into an useful dictionary
+    {
+      "anger": 2.0591775E-05,
+      "contempt": 0.0148894591,
+      "disgust": 0.000142300632,
+      "fear": 5.71208257E-05,
+      "happiness": 0.00071732566,
+      "neutral": 0.9721336,
+      "sadness": 0.0119813038,
+      "surprise": 5.831113E-05
+    }
+    """
+    return json_obj[0]['scores']
+
+# def indico_parse(json_obj):
+#     """Parses the Indicoio API data into an useful dictionary
+#        Not needed.
+#     """
+#     pass
+
+def clarifai_parse(json_obj):
+    """Parses the Clarifai API data into an useful list
+    """
+    probabilities = json_obj['results'][0]['result']['tag']['probs']
+    len_over_point_nine_five = len([prob for prob in probabilities if prob >= 0.95])
+    classes_of_interest = json_obj['results'][0]['result']['tag']['classes'][0:len_over_point_nine_five]
+    return classes_of_interest
 
 def test_img_handler_msft():
-    """Tests the image handler
+    """Tests the msft image handler
     """
     pass
 
 def test_img_handler_indicoio():
-    """Tests the image handler
+    """Tests the indicoio image handler
     """
     pass
 
 def test_img_handler_clarifai():
-    """Tests the image handler
+    """Tests the clarifai image handler
     """
     pass
 
