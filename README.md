@@ -22,22 +22,23 @@ Minah and Clarissa - This fun idea :), graphic design, creative direction, learn
 
 ## Technical challenges
 
-### Data encoding troubles
-- Grabs the binary data from the WebRTC still grab attached to POST  
-- WebRTC was somewhat intuitive to use--unicode or ASCII byte-encodings not-so-much.
-  Manipulates the unicode that Python gets from the POST request form dictionary
+### Data encoding troubles with the still `img_handler`
+- Grabs the binary data from the `WebRTC` still grab attached to `POST`  
+- `WebRTC` was somewhat intuitive to use--unicode or ASCII byte-encodings not-so-much.
+  Manipulates the unicode that Python gets from the `POST` request form dict
   and turns it into the appropriate ASCII byte-encoding, which is then base-64-decoded,
-  and then piped into a random UUID-named .png file.  
-- As a hack, I used sshfs to mount the public_html directory of my UT Austin CS account address
-  into my working dir, and sent the new .png files into that folder, chmodding per upload.  
+  and then piped into a random `UUID`-named `.png` file.  
+- As a hack, I used `sshfs` to mount the `public_html` directory of my UT Austin CS account address
+  into my working dir, and sent the new `.png` files into that folder, `chmod`ing per upload.  
 - This renders the image into a resource that's easily accessible by APIs.
   (Although this obviously won't scale, I only have 2 GB as an undergrad.)  
-- Finally, sends the URL via POST to the Microsoft Emotions API  
-- tl;dr I changed an image data-uri to a publicly available URL so it'd play better with some
-  ML libraries that didn't have native Python clients, but did have RESTful APIs.  
+- Finally, sends the `URL` via `POST` to the Microsoft Emotions API  
+- *tl;dr I changed an image `data-URI` to a publicly available `URL` so it'd play better with some
+  ML libraries that didn't have native Python clients, but did have RESTful APIs.* And this took longer than anticipated.  
+- _if you ask, `application/octet-stream` did not work for me... but I learned a lot more from this anyway!_
 
 ### Front-end
-- One day I will get better at front-end!  
+- One day I will get better at front-end! :beers:  
 
 ### Deployment
-- One day I will get better at ops!  
+- One day I will get better at ops! :sushi:  
