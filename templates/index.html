@@ -1,6 +1,18 @@
 {% extends "layout.html" %}
 {% block container %}
 
+
+<div class="camera">
+    <video id="video">Video stream not available.</video>
+    <button id="startbutton">Take photo</button>
+</div>
+
+<canvas id="canvas">
+</canvas>
+<div class="output">
+    <img id="photo" alt="The screen capture will appear in this box.">
+</div>
+
 <div class="form-container">
     <form method="POST" action="/">
         <input type="text" name="">
@@ -9,4 +21,5 @@
     </form>
 </div>
 
+<script src="{{ url_for('static', filename='js/capture.js') }}"></script>
 {% endblock %}
