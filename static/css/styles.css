@@ -1,0 +1,42 @@
+body {
+    font-family: 'Helvetica Neue', 'sans-serif';
+}
+
+.form-container {
+    text-align: center;
+    padding-top: 10px;
+}
+
+.button-group-container {
+    text-align: center;
+}
+
+.button-container {
+    padding-top: 10px;
+}
+
+.form-group {
+    color: black;
+}
+
+.footer-container {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+a {
+    text-decoration: none;
+}
+a:hover {
+    color: slategrey;
+    text-decoration: none;
+}
+
+#link-me {
+    padding-right: 10px;
+}
+
+.section-header {
+    text-align: center;
+}

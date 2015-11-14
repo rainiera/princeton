@@ -62,3 +62,6 @@ config.py
 # virtualenv
 venv/
 
+# bower components
+bower_components/
+

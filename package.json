@@ -1,0 +1,14 @@
+{
+    "name": "princeton",
+    "description": "HackPrinceton 2015 project",
+    "version": "0.0.1",
+    "engines": {
+        "node": "5.0.0"
+    },
+    "dependencies": {
+        "bower": "1.6.5"
+    },
+    "scripts": {
+        "postinstall": "bower install"
+    }
+}
