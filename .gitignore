@@ -59,3 +59,6 @@ target/
 # Config file with keys
 config.py
 
+# virtualenv
+venv/
+
