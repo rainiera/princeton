@@ -34,8 +34,9 @@ Minah and Clarissa - This fun idea :), graphic design, creative direction, learn
   (Although this obviously won't scale, I only have 2 GB as an undergrad.)  
 - Finally, sends the `URL` via `POST` to the Microsoft Emotions API  
 - *tl;dr I changed an image `data-URI` to a publicly available `URL` so it'd play better with some
-  ML libraries that didn't have native Python clients, but did have RESTful APIs.* And this took longer than anticipated.  
-- _if you ask, `application/octet-stream` did not work for me... but I learned a lot more from this anyway!_
+  ML libraries that didn't have native Python clients, but did have RESTful APIs.* **And this took longer than anticipated.**  
+- if you ask, changing to `application/octet-stream` in the HTTP header did not work for me... but I learned a lot more
+  from this anyway! :grin:  
 
 ### Front-end
 - One day I will get better at front-end! :beers:  
