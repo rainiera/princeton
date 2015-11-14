@@ -133,9 +133,9 @@ def reset():
     session['msft'] = {}
     session['indico'] = {}
     session['clarifai'] = {}
-    fn = "http://cs.utexas.edu/~rainier/{}.png".format(session['uuid'])
-    subprocess.call("rm ./models/mount/{}".format(fn),
+    subprocess.call("rm ./models/mount/{}.png".format(session['uuid']),
                     shell=True)
+    session['uuid'] = {}
     return redirect('/')
 
 if __name__ == '__main__':
