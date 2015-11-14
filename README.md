@@ -5,20 +5,20 @@ We take a still of your face, and pool emotional/topic predictions from the Micr
 to spark a conversation with an AI. (with your news feed?)
 
 Using Wikipedia as a training set and fictional news feed data as the test set, we sort the posts into the topics
-you might find interest or delight in based on your emotions, with help from gensim.  
+you might find interest or delight in based on your emotions, with help from gensim and Indico.  
 
 ## Credz
 Rainier - Web development, APIs, ML, and deployment  
 Minah and Clarissa - This fun idea :), graphic design, creative direction, learned web development  
 
 ## APIs/services used  
-- Microsoft Project Oxford  
-- Indico  
-- Clarifai  
-- gensim  
-- DigitalOcean  
-- Flask (Python)  
-- Bower for front-end dependencies (d3, bootstrap)  
+- [Microsoft Project Oxford](https://www.projectoxford.ai/)  
+- [Indico](https://indico.io/)  
+- [Clarifai](http://www.clarifai.com/)  
+- [gensim](https://radimrehurek.com/gensim/)  
+- [DigitalOcean](https://www.digitalocean.com/)  
+- [Flask](http://flask.pocoo.org/) (Python)  
+- [Bower](http://bower.io/) for front-end dependencies ([d3](http://d3js.org/), [bootstrap](http://getbootstrap.com/))  
 
 ## Technical challenges
 
