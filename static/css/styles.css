@@ -37,6 +37,10 @@ a:hover {
     padding-right: 10px;
 }
 
+#link-em {
+    padding-left: 10px;
+}
+
 .section-header {
     text-align: center;
 }

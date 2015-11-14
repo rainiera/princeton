@@ -1,6 +1,9 @@
 {% extends "layout.html" %}
 {% block container %}
 
+<h1>Feelsbook.com</h1>
+<h3>An experimental news feed / AI precursor / feelings-dashboard.</h3>
+<h5>With our increasing trust in algorithms and automation, what does machine learning think about a part of you?</h5>
 
 <div class="camera">
     <video id="video">Video stream not available.</video>
@@ -13,11 +16,9 @@
     <img id="photo" alt="The screen capture will appear in this box.">
 </div>
 
-<div class="form-container">
-    <form id="still" method="POST" action="/img_handler">
-        <input type="hidden" name="stillIn" id="stillIn">
-    </form>
-</div>
+<form id="still" method="POST" action="/img_handler">
+    <input type="hidden" name="stillIn" id="stillIn">
+</form>
 
 <script src="{{ url_for('static', filename='js/capture.js') }}"></script>
 {% endblock %}

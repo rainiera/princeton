@@ -34,6 +34,7 @@ def setup_session_dicts():
     session['msft'] = {}
     session['indico'] = {}
     session['clarifai'] = {}
+    session['uuid'] = None
 
 @app.route('/')
 def index():
@@ -58,7 +59,8 @@ def img_handler():
     data = request.form.get('stillIn')
     data = data[22:].encode('latin-1')
     binary_data = a2b_base64(data)
-    fn = str(uuid4()) + ".png"
+    session['uuid'] = str(uuid4())
+    fn = session['uuid'] + ".png"
     with open('./models/mount/{}'.format(fn), 'wb') as fd:
         fd.write(binary_data)
     subprocess.call("chmod 755 ./models/mount/{}".format(fn),
@@ -81,7 +83,7 @@ def img_handler():
     clarifai_req = clarifai_api.tag_image_urls(resource)
     session['clarifai'] = clarifai_parse(clarifai_req)
 
-    return str(session['msft']) + '\n\n' + str(session['indico']) + '\n\n' + str(session['clarifai'])
+    return redirect('/results')
 
 def msft_parse(json_obj):
     """Parses the Microsoft Emotions API data into an useful dictionary
@@ -102,6 +104,13 @@ def clarifai_parse(json_obj):
     classes_of_interest = json_obj['results'][0]['result']['tag']['classes'][0:len_over_point_nine_five]
     return classes_of_interest
 
+@app.route('/results')
+def show_results():
+    # inject resource into the template -> div style
+    resource = "http://cs.utexas.edu/~rainier/{}.png".format(session['uuid'])
+    # session dict is already in the template as well so no need to pass thru render_template
+    return render_template('results.html', resource=resource)
+
 def test_img_handler_msft():
     """Tests the msft image handler
     """
@@ -117,6 +126,17 @@ def test_img_handler_clarifai():
     """
     pass
 
+@app.route('/reset')
+def reset():
+    """Clears the dictionaries and removes the resource from the data store... lol
+    """
+    session['msft'] = {}
+    session['indico'] = {}
+    session['clarifai'] = {}
+    fn = "http://cs.utexas.edu/~rainier/{}.png".format(session['uuid'])
+    subprocess.call("rm ./models/mount/{}".format(fn),
+                    shell=True)
+    return redirect('/')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

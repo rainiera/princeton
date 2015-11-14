@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block container %}
+
+<h4>feelsbook</h4>
+
+<h4>Here's some data we gathered from your face...</h4>
+<h3>Your face</h3>
+<div id="face" style="background-image: url('{{ resource }}'); width: 320px; height: 240px;"></div>
+<h3>Some data</h3>
+<div>{{ session['msft'] }}</div>
+<div>{{ session['indico'] }}</div>
+<div>{{ session['clarifai'] }}</div>
+
+{% endblock %}
