@@ -85,16 +85,6 @@ def img_handler():
 
 def msft_parse(json_obj):
     """Parses the Microsoft Emotions API data into an useful dictionary
-    {
-      "anger": 2.0591775E-05,
-      "contempt": 0.0148894591,
-      "disgust": 0.000142300632,
-      "fear": 5.71208257E-05,
-      "happiness": 0.00071732566,
-      "neutral": 0.9721336,
-      "sadness": 0.0119813038,
-      "surprise": 5.831113E-05
-    }
     """
     return json_obj[0]['scores']
 
