@@ -1,8 +1,8 @@
 body {
-    font-family: 'Helvetica Neue', 'sans-serif';
+    font-family: 'Lato', 'Helvetica', 'Helvetica Neue', 'Trebuchet MS', 'sans-serif';
 }
 
-.form-container {
+.container {
     text-align: center;
     padding-top: 10px;
 }
@@ -12,7 +12,7 @@ body {
 }
 
 .button-container {
-    padding-top: 10px;
+    padding-top: 1em;
 }
 
 .form-group {
@@ -21,7 +21,7 @@ body {
 
 .footer-container {
     text-align: center;
-    margin-top: 10px;
+    padding-top: 1em;
     margin-bottom: 10px;
 }
 
@@ -89,4 +89,55 @@ a:hover {
 .contentarea {
     font-size: 16px;
     width: 760px;
+}
+
+#nav {
+    background-color: #3A5795;
+    width: 100%;
+	float: left;
+	margin: 0 0 1em 0;
+	padding: 0;
+}
+
+#nav-in {
+
+}
+
+#nav > h1 {
+    padding-left: 1em;
+    color: white;
+    font-weight: 300;
+}
+
+.small-text {
+    padding-top: 1em;
+
+}
+
+#status-entry {
+    position: relative;
+    width: 500px;
+    height: 100px;
+    padding: 10px;
+    border-radius: 5px;
+    border: medium none #D4DAE8;
+    background: #D4DAE8 none repeat scroll 0% 0%;
+}
+
+#post-button-container {
+
+}
+
+#post-button {
+    background-color: #3A5795;
+    color: white;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    margin-top: 5px;
+    border: medium none #3A5795;
+}
+
+#second-results {
+    text-align:center;
 }

@@ -4,41 +4,67 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bower_components/c3/c3.min.css') }}">
 <script src="{{ url_for('static', filename='bower_components/d3/d3.min.js') }}"></script>
 <script src="{{ url_for('static', filename='bower_components/c3/c3.min.js') }}"></script>
-<h4>feelsbook</h4>
 
-<h4>Here's some data we gathered from your face...</h4>
-<h3>Your face</h3>
-<div id="face" style="background-image: url('{{ resource }}'); width: 320px; height: 240px; margin: auto"></div>
-<h3>Algorithm #1</h3>
-    <div id="chart1"></div>
-    <script>
-        var chart1 = c3.generate({
-            bindto: '#chart1',
-            data: {
-                columns: {{ chart1_data | safe }},
-                type : 'donut'
-            },
-            donut: {
-                title: "Algorithm #1 Analysis"
-            }
-        });
-    </script>
-<h3>Algorithm #2</h3>
-    <div id="chart2"></div>
-    <script>
-        var chart2 = c3.generate({
-            bindto: '#chart2',
-            data: {
-                columns: {{ chart2_data | safe }},
-                type : 'donut'
-            },
-            donut: {
-                title: "Algorithm #2 Analysis"
-            }
-        });
-    </script>
-<div>{{ session['msft'] }}</div>
-<div>{{ session['indico'] }}</div>
-<div>{{ session['clarifai'] }}</div>
+<script>
+$(document).ready(function() {
+    $("#data-listener").hide();
+    $("#data-toggler").click(function(){
+        $("#data-listener").toggle(1000);
+    });
+});
+</script>
+
+<h4><a id="data-toggler">Show/hide data</a></h4>
+<div id="data-listener" style="display: none;">
+    <h3>Your face</h3>
+    <div id="face" style="background-image: url('{{ resource }}'); width: 320px; height: 240px; margin: auto"></div>
+    <h3>Algorithm #1</h3>
+        <div id="chart1"></div>
+        <script>
+            var chart1 = c3.generate({
+                bindto: '#chart1',
+                data: {
+                    columns: {{ chart1_data | safe }},
+                    type : 'donut'
+                },
+                donut: {
+                    title: "Algorithm #1 Analysis"
+                }
+            });
+        </script>
+    <h3>Algorithm #2</h3>
+        <div id="chart2"></div>
+        <script>
+            var chart2 = c3.generate({
+                bindto: '#chart2',
+                data: {
+                    columns: {{ chart2_data | safe }},
+                    type : 'donut'
+                },
+                donut: {
+                    title: "Algorithm #2 Analysis"
+                }
+            });
+        </script>
+    <div>{{ session['msft'] }}</div>
+    <div>{{ session['indico'] }}</div>
+    <div>{{ session['clarifai'] }}</div>
+</div>
+<div id="second-results">
+    <form id="status-entry-container">
+        <textarea id="status-entry" placeholder="{{ emotional_query }}"></textarea>
+    </form>
+<!--
+    <div id="status-icon-container">
+        <span><img src="{{ url_for('static', filename='imgs/camera.png') }}" class="status-icon"></span>
+        <span><img src="{{ url_for('static', filename='imgs/tag.png') }}" class="status-icon"></span>
+        <span><img src="{{ url_for('static', filename='imgs/emoji.png') }}" class="status-icon"></span>
+        <span><img src="{{ url_for('static', filename='imgs/location.png') }}" class="status-icon"></span>
+    </div>
+-->
+    <div id="post-button-container">
+        <button id="post-button">Post</button>
+    </div>
+</div>
 
 {% endblock %}

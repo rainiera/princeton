@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link href='https://fonts.googleapis.com/css?family=Lato:300' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
     <script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
@@ -10,13 +11,27 @@
 </head>
 
 <body>
+
+    <div id='nav'>
+        <h1>Feelsbook</h1>
+    </div>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
     <div class="container">
         {% block container %}
         {% endblock %}
     </div>
     <div class='footer-container'>
-        <a id='link-me' href="https://github.com/rainiera/" target="_blank">me</a>
+        <a id='link-me' href="https://github.com/rainiera/princeton" target="_blank">code</a>
         <a id='link-em' href="/reset">reset session</a>
+        <!-- <div class="small-text">(disclaimer: this is not a phishing attempt)</div> -->
     </div>
 </body>
 

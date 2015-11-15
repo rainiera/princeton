@@ -8,7 +8,7 @@ import indicoio
 from clarifai.client import ClarifaiApi
 from binascii import a2b_base64
 from uuid import uuid4
-from flask import Flask, render_template, request, redirect, session, Response, url_for
+from flask import Flask, render_template, request, redirect, session, Response, url_for, flash, get_flashed_messages
 
 from config import config
 from models.d3_injectors import generate_emotion_data
@@ -73,6 +73,7 @@ def img_handler():
     headers = {'Ocp-Apim-Subscription-Key': config['MSFT_EMOTION_KEY'],
                'Content-Type': 'application/json'}
     msft_req = requests.post(url=msft_url, data=json.dumps({'url': resource}), headers=headers)
+    print msft_req.json()
     session['msft'] = msft_parse(msft_req.json())
 
     # indicoio request
@@ -88,7 +89,11 @@ def img_handler():
 def msft_parse(json_obj):
     """Parses the Microsoft Emotions API data into an useful dictionary
     """
-    return json_obj[0]['scores']
+    try:
+        return json_obj[0]['scores']
+    except:
+        flash('Check that the temporary datastore is accessible.')
+        return redirect('/')
 
 # def indico_parse(json_obj):
 #     """Parses the Indicoio API data into an useful dictionary
@@ -112,7 +117,14 @@ def show_results():
     # session dict is already in the template as well so no need to pass thru render_template
     chart1_data = generate_emotion_data(session['msft'])
     chart2_data = generate_emotion_data(session['indico'])
-    return render_template('results.html', resource=resource, chart1_data=chart1_data, chart2_data=chart2_data)
+    queries = ['What\'s on your mind?', 'What\'s wrong?', 'Vent it out.',
+               'What are you so happy about?', 'What happened this time...']
+    emotional_query = queries[0]
+    return render_template('results.html',
+                           resource=resource,
+                           chart1_data=chart1_data,
+                           chart2_data=chart2_data,
+                           emotional_query=emotional_query)
 
 @app.route('/reset')
 def reset():
