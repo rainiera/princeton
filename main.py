@@ -11,7 +11,7 @@ from uuid import uuid4
 from flask import Flask, render_template, request, redirect, session, Response, url_for
 
 from config import config
-
+from models.d3_injectors import generate_emotion_data
 
 app = Flask(__name__)
 app.secret_key = config['APP_SECRET_KEY']
@@ -33,7 +33,7 @@ os.environ['CLARIFAI_APP_SECRET'] = config['CLARIFAI_SECRET']
 def setup_session_dicts():
     session['msft'] = {}
     session['indico'] = {}
-    session['clarifai'] = {}
+    session['clarifai'] = []
     session['uuid'] = None
 
 @app.route('/')
@@ -101,6 +101,7 @@ def clarifai_parse(json_obj):
     """
     probabilities = json_obj['results'][0]['result']['tag']['probs']
     len_over_point_nine_five = len([prob for prob in probabilities if prob >= 0.95])
+    len_over_point_nine_five = len_over_point_nine_five if len_over_point_nine_five > 3 else 4
     classes_of_interest = json_obj['results'][0]['result']['tag']['classes'][0:len_over_point_nine_five]
     return classes_of_interest
 
@@ -109,22 +110,9 @@ def show_results():
     # inject resource into the template -> div style
     resource = "http://cs.utexas.edu/~rainier/{}.png".format(session['uuid'])
     # session dict is already in the template as well so no need to pass thru render_template
-    return render_template('results.html', resource=resource)
-
-def test_img_handler_msft():
-    """Tests the msft image handler
-    """
-    pass
-
-def test_img_handler_indicoio():
-    """Tests the indicoio image handler
-    """
-    pass
-
-def test_img_handler_clarifai():
-    """Tests the clarifai image handler
-    """
-    pass
+    chart1_data = generate_emotion_data(session['msft'])
+    chart2_data = generate_emotion_data(session['indico'])
+    return render_template('results.html', resource=resource, chart1_data=chart1_data, chart2_data=chart2_data)
 
 @app.route('/reset')
 def reset():
@@ -132,7 +120,7 @@ def reset():
     """
     session['msft'] = {}
     session['indico'] = {}
-    session['clarifai'] = {}
+    session['clarifai'] = []
     subprocess.call("rm ./models/mount/{}.png".format(session['uuid']),
                     shell=True)
     session['uuid'] = {}

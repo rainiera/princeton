@@ -1,12 +1,42 @@
 {% extends "layout.html" %}
 {% block container %}
 
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bower_components/c3/c3.min.css') }}">
+<script src="{{ url_for('static', filename='bower_components/d3/d3.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bower_components/c3/c3.min.js') }}"></script>
 <h4>feelsbook</h4>
 
 <h4>Here's some data we gathered from your face...</h4>
 <h3>Your face</h3>
-<div id="face" style="background-image: url('{{ resource }}'); width: 320px; height: 240px;"></div>
-<h3>Some data</h3>
+<div id="face" style="background-image: url('{{ resource }}'); width: 320px; height: 240px; margin: auto"></div>
+<h3>Algorithm #1</h3>
+    <div id="chart1"></div>
+    <script>
+        var chart1 = c3.generate({
+            bindto: '#chart1',
+            data: {
+                columns: {{ chart1_data | safe }},
+                type : 'donut'
+            },
+            donut: {
+                title: "Algorithm #1 Analysis"
+            }
+        });
+    </script>
+<h3>Algorithm #2</h3>
+    <div id="chart2"></div>
+    <script>
+        var chart2 = c3.generate({
+            bindto: '#chart2',
+            data: {
+                columns: {{ chart2_data | safe }},
+                type : 'donut'
+            },
+            donut: {
+                title: "Algorithm #2 Analysis"
+            }
+        });
+    </script>
 <div>{{ session['msft'] }}</div>
 <div>{{ session['indico'] }}</div>
 <div>{{ session['clarifai'] }}</div>
