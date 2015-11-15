@@ -99,8 +99,9 @@ a:hover {
 	padding: 0;
 }
 
-#nav-in {
-
+pre {
+    text-align: left;
+    display: inline-block;
 }
 
 #nav > h1 {
@@ -140,4 +141,8 @@ a:hover {
 
 #second-results {
     text-align:center;
+}
+
+#feels-png {
+    display:inline-block;
 }

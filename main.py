@@ -2,16 +2,21 @@ import os
 import sys
 import subprocess
 import json
+import random
+import operator
 import logging
 import requests
 import indicoio
-from clarifai.client import ClarifaiApi
-from binascii import a2b_base64
+from chatterbot import ChatBot
+
 from uuid import uuid4
-from flask import Flask, render_template, request, redirect, session, Response, url_for, flash, get_flashed_messages
+from binascii import a2b_base64
+from clarifai.client import ClarifaiApi
+from flask import (Flask, render_template, request, redirect, session, Response,
+                   url_for, flash, get_flashed_messages, g)
 
 from config import config
-from models.d3_injectors import generate_emotion_data
+from models.d3_injectors import generate_emotion_data, pretty_print
 
 app = Flask(__name__)
 app.secret_key = config['APP_SECRET_KEY']
@@ -31,6 +36,15 @@ os.environ['CLARIFAI_APP_SECRET'] = config['CLARIFAI_SECRET']
 
 @app.before_first_request
 def setup_session_dicts():
+    """An untrained instance of ChatterBot starts off with no knowledge of how to communicate.
+    Each time a user enters a statement, the library saves the text that they entered and the
+    text that the statement was in response to. As ChatterBot receives more input the number
+    of responses that it can reply and the accuracy of each response in relation to the input
+    statement increase. The program selects the closest matching response by searching for the
+    closest matching known statement that matches the input, it then returns the most likely
+    response to that statement based on how frequently each response is issued by the people
+    the bot communicates with.
+    """
     session['msft'] = {}
     session['indico'] = {}
     session['clarifai'] = []
@@ -69,11 +83,15 @@ def img_handler():
     print json.dumps({'url': resource})
 
     # msft request
-    msft_url = "https://api.projectoxford.ai/emotion/v1.0/recognize"
-    headers = {'Ocp-Apim-Subscription-Key': config['MSFT_EMOTION_KEY'],
-               'Content-Type': 'application/json'}
-    msft_req = requests.post(url=msft_url, data=json.dumps({'url': resource}), headers=headers)
-    print msft_req.json()
+    try:
+        msft_url = "https://api.projectoxford.ai/emotion/v1.0/recognize"
+        headers = {'Ocp-Apim-Subscription-Key': config['MSFT_EMOTION_KEY'],
+                   'Content-Type': 'application/json'}
+        msft_req = requests.post(url=msft_url, data=json.dumps({'url': resource}), headers=headers)
+        print "msft {}".format(msft_req.json())
+    except:
+        flash('No face was detected!')
+        return redirect('/', messages=get_flashed_messages())
     session['msft'] = msft_parse(msft_req.json())
 
     # indicoio request
@@ -90,6 +108,9 @@ def msft_parse(json_obj):
     """Parses the Microsoft Emotions API data into an useful dictionary
     """
     try:
+        if len(json_obj[0]['scores']) == 0:
+            flash('No face was detected!')
+            return redirect('/')
         return json_obj[0]['scores']
     except:
         flash('Check that the temporary datastore is accessible.')
@@ -117,14 +138,56 @@ def show_results():
     # session dict is already in the template as well so no need to pass thru render_template
     chart1_data = generate_emotion_data(session['msft'])
     chart2_data = generate_emotion_data(session['indico'])
-    queries = ['What\'s on your mind?', 'What\'s wrong?', 'Vent it out.',
-               'What are you so happy about?', 'What happened this time...']
-    emotional_query = queries[0]
+    # Base emotional query keys from indicoio as there are less of those
+    queries = {'Angry': 'What happened?',
+               'Sad': 'What\'s wrong?',
+               'Neutral': 'What\'s on your mind?',
+               'Surprise': 'What\'s up?',
+               'Fear': 'Are you okay?',
+               'Happy': 'Share your joy!'}
+    primary_emotion_1 = max(session['msft'].iteritems(), key=operator.itemgetter(1))[0]
+    print primary_emotion_1
+    # Msft API is typically right on these accounts, Indicoio occasionally "overthinks"
+    if primary_emotion_1 == 'neutral':
+        primary_emotion = 'Neutral'
+    elif primary_emotion_1 == 'happiness':
+        primary_emotion = 'Happy'
+    else:
+        primary_emotion_2 = max(session['indico'].iteritems(), key=operator.itemgetter(1))[0]
+        primary_emotion = random.choice([primary_emotion_2])
+    print primary_emotion
+    emotional_query = queries[primary_emotion]
+    pretty = {'msft': pretty_print(session['msft']),
+              'indico': pretty_print(session['indico']),
+              'clarifai': pretty_print(session['clarifai'])}
     return render_template('results.html',
                            resource=resource,
                            chart1_data=chart1_data,
                            chart2_data=chart2_data,
-                           emotional_query=emotional_query)
+                           emotional_query=emotional_query,
+                           pretty=pretty)
+
+# @app.route('/results', methods=['POST'])
+# def chat():
+#     """A fairly expensive chat interface that could be changed to polling or websockets
+#     """
+#     resource = "http://cs.utexas.edu/~rainier/{}.png".format(session['uuid'])
+#     # session dict is already in the template as well so no need to pass thru render_template
+#     chart1_data = generate_emotion_data(session['msft'])
+#     chart2_data = generate_emotion_data(session['indico'])
+#     pretty = {'msft': pretty_print(session['msft']),
+#               'indico': pretty_print(session['indico']),
+#               'clarifai': pretty_print(session['clarifai'])}
+#     bot_response = g.chatbot.get_response(str(request.form['say']))
+#     session['conversation'].append(bot_response)
+#     messages = session['conversation']
+#     return render_template('results.html',
+#                            resource=resource,
+#                            chart1_data=chart1_data,
+#                            chart2_data=chart2_data,
+#                            emotional_query="Let's keep chatting",
+#                            pretty=pretty,
+#                            messages=messages)
 
 @app.route('/reset')
 def reset():
@@ -133,6 +196,7 @@ def reset():
     session['msft'] = {}
     session['indico'] = {}
     session['clarifai'] = []
+    session['conversation'] = []
     subprocess.call("rm ./models/mount/{}.png".format(session['uuid']),
                     shell=True)
     session['uuid'] = {}

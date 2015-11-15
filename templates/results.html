@@ -8,16 +8,51 @@
 <script>
 $(document).ready(function() {
     $("#data-listener").hide();
+    $("#data-listener-1").hide();
+    $("#data-listener-2").hide();
     $("#data-toggler").click(function(){
         $("#data-listener").toggle(1000);
     });
+    $("#data-toggler-1").click(function(){
+        $("#data-listener-1").toggle(500);
+    });
+    $("#data-toggler-2").click(function(){
+        $("#data-listener-2").toggle(500);
+    });
+    var arr=[];
+    function addStatus(){
+        var input = document.getElementById("status_box").value;
+        if(input==""){
+            window.alert("You got me right in the feelerinos.");
+        }
+        else{
+            arr.push(input);
+        }
+    }
+    function display(){
+        var temp = "";
+        for(i=arr.length-1; i>=0; i--){
+            temp += "<b>You</b>"+'"'+arr[i]+'"'+"<br>"+"<hr>";
+        }
+        document.getElementById("status-entry").innerHTML = temp;
+    }
+    function clear(){
+
+    }
 });
 </script>
+
+    <script>
+    </script>
+
+
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 
 <h4><a id="data-toggler">Show/hide data</a></h4>
 <div id="data-listener" style="display: none;">
     <h3>Your face</h3>
     <div id="face" style="background-image: url('{{ resource }}'); width: 320px; height: 240px; margin: auto"></div>
+    <hr>
     <h3>Algorithm #1</h3>
         <div id="chart1"></div>
         <script>
@@ -32,6 +67,9 @@ $(document).ready(function() {
                 }
             });
         </script>
+    <h5><a id="data-toggler-1">Show/hide exact values</a></h5>
+    <pre id="data-listener-1" class="prettyprint">{{ pretty['msft'] }}</pre>
+    <hr>
     <h3>Algorithm #2</h3>
         <div id="chart2"></div>
         <script>
@@ -46,24 +84,25 @@ $(document).ready(function() {
                 }
             });
         </script>
-    <div>{{ session['msft'] }}</div>
-    <div>{{ session['indico'] }}</div>
-    <div>{{ session['clarifai'] }}</div>
+    <h5><a id="data-toggler-2">Show/hide exact values</a></h5>
+    <pre id="data-listener-2" class="prettyprint">{{ pretty['indico'] }}</pre>
+    <hr>
+    <h3>Topics from Image</h3>
+    <pre class="prettyprint">{{ session['clarifai'] }}</pre>
 </div>
+<hr>
 <div id="second-results">
-    <form id="status-entry-container">
-        <textarea id="status-entry" placeholder="{{ emotional_query }}"></textarea>
+{#    <div>#}
+{#        <img src="{{ url_for('static', filename='imgs/feels.png') }}" id="feels-png">#}
+{#    </div>#}
+    <form id="status-entry-container" method="post", action="/results">
+        <textarea id="status-entry" placeholder="{{ emotional_query }}" name="say"></textarea>
     </form>
-<!--
-    <div id="status-icon-container">
-        <span><img src="{{ url_for('static', filename='imgs/camera.png') }}" class="status-icon"></span>
-        <span><img src="{{ url_for('static', filename='imgs/tag.png') }}" class="status-icon"></span>
-        <span><img src="{{ url_for('static', filename='imgs/emoji.png') }}" class="status-icon"></span>
-        <span><img src="{{ url_for('static', filename='imgs/location.png') }}" class="status-icon"></span>
-    </div>
--->
     <div id="post-button-container">
-        <button id="post-button">Post</button>
+        <button id="post-button" onclick="addStatus();display();clear()">Send</button>
+    </div>
+    <div>
+        <p id="status_holder"></p>
     </div>
 </div>
 

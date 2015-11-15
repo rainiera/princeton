@@ -1,11 +1,11 @@
-# Feelsbook.com
+# [Feelsbook.com](http://feelsbook.com:5000)
 ## A HackPrinceton 2015 hack
 
 We take a still of your face, and pool emotional/topic predictions from the Microsoft, Indico, and Clarifai APIs
-to spark a conversation with an AI. (with your news feed?)
+to spark a conversation with an AI. ~~(with your news feed?)~~
 
-Using Wikipedia as a training set and fictional news feed data as the test set, we sort the posts into the topics
-you might find interest or delight in based on your emotions, with help from gensim and Indico.  
+~~Using Wikipedia as a training set and fictional news feed data as the test set, we sort the posts into the topics
+you might find interest or delight in based on your emotions, with help from gensim and Indico.~~  
 
 ## Credz
 Rainier - Web development, APIs, ML, and deployment  
@@ -15,7 +15,7 @@ Minah and Clarissa - This fun idea :), graphic design, creative direction, learn
 - [Microsoft Project Oxford](https://www.projectoxford.ai/)  
 - [Indico](https://indico.io/)  
 - [Clarifai](http://www.clarifai.com/)  
-- [gensim](https://radimrehurek.com/gensim/)  
+- ~~[gensim](https://radimrehurek.com/gensim/)~~  
 - [DigitalOcean](https://www.digitalocean.com/)  
 - [Flask](http://flask.pocoo.org/) (Python)  
 - [Bower](http://bower.io/) for front-end dependencies ([d3](http://d3js.org/), [bootstrap](http://getbootstrap.com/))  
@@ -43,3 +43,11 @@ Minah and Clarissa - This fun idea :), graphic design, creative direction, learn
 
 ### Deployment
 - One day I will get better at ops! :sushi:  
+
+### Ways to make this better
+- Extraction of related tweets from status update  
+- Visualization of topic modeling tweets with network graphs  
+- Store the data-URIs to a database  
+- Integration with a chatterbot whose training state is on a database (or at least keep chat history
+  and bot training live for the session with something like Redis). Use long polling or websockets for
+  smooth UX  
